@@ -100,22 +100,32 @@ def test_get_list_of_favorites_books(collector):
     assert isinstance(favorites, list)
     assert "451 градус по Фаренгейту" in favorites
 
-@pytest.mark.parametrize("book_name,is_valid", [
-    ("", False),                    
-    ("a", True),                 
-    ("a" * 40, True),         
-    ("a" * 41, False),       
-    ("a" * 100, False),      
+@pytest.mark.parametrize("book_name", [
+    ("a"),
+    ("a" * 40),
 ])
-def test_add_new_book_length_validation(collector, book_name, is_valid):
-    
+def test_add_new_book_valid_length(collector, book_name):
     collector.add_new_book(book_name)
+    assert book_name in collector.books_genre
+    assert collector.books_genre[book_name] == ''
 
-    if is_valid:
-        assert book_name in collector.books_genre
-        assert collector.books_genre[book_name] == ''
-    else:
-        assert book_name not in collector.books_genre
+@pytest.mark.parametrize("book_name", [
+    ("a"),
+    ("a" * 40),
+])
+def test_add_new_book_valid_length(collector, book_name):
+    collector.add_new_book(book_name)
+    assert book_name in collector.books_genre
+    assert collector.books_genre[book_name] == ''
+
+@pytest.mark.parametrize("book_name", [
+    (""),
+    ("a" * 41),
+    ("a" * 100),
+])
+def test_add_new_book_invalid_length(collector, book_name):
+    collector.add_new_book(book_name)
+    assert book_name not in collector.books_genre
 
 @pytest.mark.parametrize("book_name", [
     "Война и мир",
